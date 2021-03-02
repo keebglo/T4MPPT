@@ -6,6 +6,15 @@ import time
 import datetime
 from threading import Thread
 
+
+ #-------------
+ # Protobuf Files
+ #--------------
+import EmergencyMsg_pb2 
+import PowerOffMsg_pb2 
+import UpdateMsg_pb2
+import UpdateRequestMsg_pb2
+
 class TCPSever:
  #-------------
     # Class Constants
@@ -44,22 +53,34 @@ class TCPSever:
                 while True:
                     print("Socket Listening....")
                 
-                    self.m_ClientConnection, self.m_addr = self.m_Socket.accept()
+                    self.m_Socket, self.m_addr = self.m_Socket.accept()
                     self.m_bRunning = True
     
                     with self.m_ClientConnection:
                         print('Connected by', self.m_addr)
                         while True:
-                            data = self.m_ClientConnection.recv(1024).decode()
-                            print(data)
+                          
+                           sizeBuff = self.m_Socket.recv(4)
 
-                            if data == '1':
-                                self.m_ClientConnection.sendall(b'Test Message Received')
-                        #Thread to process incoming messages
-                            #self.m_rxThread = Thread(target=self.__processRXMsgs)
-                  
-                       # elif data == 'Test Message':
-                           # conn.sendall('Test Message Received')
+                           sizeInfo = struct.unpack('<L', sizeBuff)[0]
+
+                           if sizeInfo > 0:
+                                      #unpack 4 bytes (Little Endian)
+                                      buffType = self.m_Socket.recv(4)
+                                      msgType = struct.unpack('<L', buffType)[0]
+
+                                      #process proto message
+                                      msgBuff = self.m_Socket.recv(sizeInfo)
+
+                                      if msgType == 1:
+                                          print("---> Emergency Message Received")
+                                          msgFromClient = EmergencyMsg_pb2.EmergencyShutdown()
+                                          msgFromClient.ParseFromString(msgBuff)
+
+                                          print("Timetag: ", msgFromClient.TimeTag)
+                                          print("Message: ", msgFromClient.emergencyMsg)
+                                          print("Problem: ", msgFromClient.problem)
+
 
                     
 
@@ -70,24 +91,8 @@ class TCPSever:
             print("Problem in init")
 #-------------------------------------------------------------------------------------------
 
-    def __processRXMsgs(self):
+  
 
-
-        self.m_rxThread.start()
-
-        while (self.m_bRunning):
-            data = self.m_ClientConnection.recv(1024)
-            print(data)
-
-            if data == 'Test Message':
-                self.m_ClientConnection.sendall('Test Message Received')
-
-            else:
-               self.m_bRunning = False
-
-        self.m_Socket.close()
-        self.m_rxThread.join()
-        sys.exit(0)
 
 if __name__ == "__main__":
     server = TCPSever()

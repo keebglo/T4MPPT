@@ -6,6 +6,16 @@ import time
 import datetime
 from threading import Thread
 
+
+#---------------------------
+#Proto Files
+#---------------------------
+import EmergencyMsg_pb2
+import UpdateMsg_pb2
+import UpdateRequestMsg_pb2
+import PowerOffMsg_pb2 
+
+
 class TCPClient:
     
     #-------------
@@ -88,7 +98,7 @@ class TCPClient:
 
              if MessageChosen == '1':
                 print("Sending Test Message")
-                self.__sendMsg1()
+                self.__sendEmergencyMsg()
 
              elif (MessageChosen == "X" or MessageChosen == 'x'):
                  print ("Closing Socket")
@@ -102,18 +112,72 @@ class TCPClient:
     
    #---------------------------------------------------------------------
    
-    def __sendMsg1(self):
-        msg = "1"
-        self.m_Socket.sendall(msg.encode())
-        print("Message Sent")
+    def __sendEmergencyMsg(self):
+        #msg = "1"
+       # self.m_Socket.sendall(msg.encode())        Test code
+        #print("Message Sent")
 
+       timetag = time.time() * 1000
+       iTimeTag = int(timetag)
+
+       msgTosend = EmergencyMsg_pb2.EmergencyShutdown()
+       msgTosend.TimeTag = iTimeTag
+       msgTosend.emergencyMsg = "System Failure"
+       msgTosend.problem = "Something broke"
+       
+       msgBytestoSend = msgTosend.SerializeToString()
+       payloadsize= len(msgBytestoSend)
+       sizeinfo = struct.pack('<L', payloadsize)
+       msgType = 1
+       msgTypeInfo = struct.pack('<L', msgType)
+
+       print ("Message sent:")
+       print ("Size Info: ", sizeinfo)
+       print ("Msg Type: ", msgType)
+       print ("Message: ", msgBytestoSend)
+
+       self.m_Socket.send(sizeinfo + msgTypeInfo + msgBytestoSend)
 
     #---------------------------------------------------------------------
 
     def __processRXMsgs(self):
 
-        data = self.m_Socket.recv(1024)                 
-        print('Received', repr(data))
+        bServerDisconnect = False
+
+        while(self.m_bRunning):
+            print("RCV Thread: Waiting for data...")
+            
+            #4 bytes from buffSize
+            buffSize = self.m_Socket.recv(4)          
+            
+            #server disconnect
+            if len(buffSize) == 0:
+                bServerDisconnect = True
+                break
+
+            else:
+                buffSize = struct.unpack('<L', buffSize)[0]
+
+                if buffSize > 0:
+                    #unpack 4 bytes (little endian)
+                    buffType = self.m_Socket.recv(4)
+                    msgType = struct.unpack('<L', buffType)[0]
+
+                    #process proto message
+                    msgBuff = self.m_Socket.recv(buffSize)
+
+                    if msgType == 1 :
+                        print ("---> Emergency Message Received")
+                        msgFromSever = EmergencyMsg_pb2.EmergencyShutdown()
+                        msgFromServer.ParseFromString(msgBuff)
+
+                        print("Timetag: ", msgFromServer.TimeTag)
+                        print("Message: ", msgFromServer.emergencyMsg)
+                        print("Problem: ", msgFromServer.problem)
+
+        
+                   # data self.m_Socket(1024)
+                   # print('Received', repr(data))      Test code
 
     #---------------------------------------------------------------------
 
