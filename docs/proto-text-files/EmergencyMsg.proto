@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package MpptMsgs;
+
+
+message EmergencyShutdown 
+{
+	fixed64 TimeTag = 1;
+	string emergencyMsg = 2;
+	string problem = 3;
+
+}
+

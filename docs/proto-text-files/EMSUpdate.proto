@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package MpptMsgs;
+
+
+message EMSUpdate 
+{
+	fixed64 TimeTag = 1;
+	string load = 2;
+	fixed64 LoadValue = 3; 
+
+}
+

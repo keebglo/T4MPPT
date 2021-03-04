@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package MpptMsgs;
+
+message Update
+{
+	fixed64 TimeTag = 1;
+	int32 current = 2;
+	int32 voltage = 3; 
+	int32 temperature = 4;
+	int32 irradiance = 5;
+}

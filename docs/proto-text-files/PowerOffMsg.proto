@@ -1,0 +1,10 @@
+syntax = "proto3"; 
+
+package MpptMsgs;
+
+message PowerOff
+{
+	fixed64 TimeTag = 1;
+	string powerOff = 2;
+
+}

@@ -1,0 +1,10 @@
+syntax = "proto3"; 
+
+package MpptMsgs;
+
+message UpdateRequest
+{
+	fixed64 TimeTag = 1;
+	string request = 2;
+
+}
