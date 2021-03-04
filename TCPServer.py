@@ -56,7 +56,7 @@ class TCPSever:
                     self.m_Socket, self.m_addr = self.m_Socket.accept()
                     self.m_bRunning = True
     
-                    with self.m_ClientConnection:
+                    with self.m_Socket:
                         print('Connected by', self.m_addr)
                         while True:
                           
