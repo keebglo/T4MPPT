@@ -10,10 +10,10 @@ from threading import Thread
  #-------------
  # Protobuf Files
  #--------------
-import EmergencyMsg_pb2 
-import PowerOffMsg_pb2 
-import UpdateMsg_pb2
-import UpdateRequestMsg_pb2
+import lib.EmergencyMsg_pb2 
+import lib.PowerOffMsg_pb2 
+import lib.UpdateMsg_pb2
+import lib.UpdateRequestMsg_pb2
 
 class TCPSever:
  #-------------
@@ -74,7 +74,7 @@ class TCPSever:
 
                                       if msgType == 1:
                                           print("---> Emergency Message Received")
-                                          msgFromClient = EmergencyMsg_pb2.EmergencyShutdown()
+                                          msgFromClient = lib.EmergencyMsg_pb2.EmergencyShutdown()
                                           msgFromClient.ParseFromString(msgBuff)
 
                                           print("Timetag: ", msgFromClient.TimeTag)

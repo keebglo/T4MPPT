@@ -10,10 +10,10 @@ from threading import Thread
 #---------------------------
 #Proto Files
 #---------------------------
-import EmergencyMsg_pb2
-import UpdateMsg_pb2
-import UpdateRequestMsg_pb2
-import PowerOffMsg_pb2 
+import lib.EmergencyMsg_pb2
+import lib.UpdateMsg_pb2
+import lib.UpdateRequestMsg_pb2
+import lib.PowerOffMsg_pb2 
 
 
 class TCPClient:
@@ -120,7 +120,7 @@ class TCPClient:
        timetag = time.time() * 1000
        iTimeTag = int(timetag)
 
-       msgTosend = EmergencyMsg_pb2.EmergencyShutdown()
+       msgTosend = lib.EmergencyMsg_pb2.EmergencyShutdown()
        msgTosend.TimeTag = iTimeTag
        msgTosend.emergencyMsg = "System Failure"
        msgTosend.problem = "Something broke"
