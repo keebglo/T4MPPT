@@ -1,3 +1,5 @@
+#@author Annie Vu
+
 import os
 import sys
 import struct
