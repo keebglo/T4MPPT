@@ -66,6 +66,8 @@ class TCPSever:
 
                            sizeInfo = struct.unpack('<L', sizeBuff)[0]
 
+                            #DONT WORRY ABOUT unpacking messages 
+                            #====================================================
                            if sizeInfo > 0:
                                       #unpack 4 bytes (Little Endian)
                                       buffType = self.m_Socket.recv(4)
@@ -82,6 +84,7 @@ class TCPSever:
                                           print("Timetag: ", msgFromClient.TimeTag)
                                           print("Message: ", msgFromClient.emergencyMsg)
                                           print("Problem: ", msgFromClient.problem)
+                            #======================================================
 
 
                     
