@@ -8,7 +8,6 @@ class ProtoMsgFactory:
     def __init__(self):
         pass
 
-    @staticmethod
     def pack_msg(msg):
         msg_as_bytes = msg.SerializeToString()
         msg_size = len(msg_as_bytes)
@@ -16,10 +15,10 @@ class ProtoMsgFactory:
         msg_type = 1
         msg_type_info = struct.pack('<L', msg_type)
 
-        return (msg_size_info, msg_type_info, msg_as_bytes)
+        return (msg_size_info, msg_type_info , msg_as_bytes)
 
-    @staticmethod
-    def make_emergency_msg():
+    
+    def make_emergency_msg(self):
         msg = EmergencyMsg_pb2.EmergencyShutdown()
         msg.TimeTag = int(time.time() * 1000)
         msg.emergencyMsg = "System Failure"
@@ -27,8 +26,8 @@ class ProtoMsgFactory:
 
         return ProtoMsgFactory.pack_msg(msg)
 
-    @staticmethod
-    def make_EMS_update_msg():
+
+    def make_EMS_update_msg(self):
         msg = EMSUpdate_pb2.EMSUpdate()
         msg.TimeTag = int(time.time() * 1000)
         msg.load = bytes(999)
@@ -36,24 +35,22 @@ class ProtoMsgFactory:
 
         return ProtoMsgFactory.pack_msg(msg)
 
-    @staticmethod
-    def make_power_off_msg():
+
+    def make_power_off_msg(self):
         msg = PowerOffMsg_pb2.PowerOff()
         msg.TimeTag = int(time.time() * 1000)
         msg.powerOff = "dummy value"
 
         return ProtoMsgFactory.pack_msg(msg)
 
-    @staticmethod
-    def make_update_request_msg():
+    def make_update_request_msg(self):
         msg = UpdateRequestMsg_pb2.UpdateRequest()
         msg.TimeTag = int(time.time() * 1000)
         msg.request = "dummy value"
 
         return ProtoMsgFactory.pack_msg(msg)
 
-    @staticmethod
-    def make_update_msg():
+    def make_update_msg(self):
         msg = UpdateMsg_pb2.Update()
         msg.TimeTag = int(time.time() * 1000)
         msg.current = 999

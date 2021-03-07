@@ -22,9 +22,10 @@ class TCPSever:
     # Class Constants
     #--------------
     
-    IP_ADDR = '127.0.0.1'
-    PORT = 11001
-    
+    #IP_ADDR = '127.0.0.1'
+    #PORT = 11001
+    IP_ADDR = 'localhost'
+    PORT = 10000
     #-------------------
     # Class Memeber Variables
     #------------------

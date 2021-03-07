@@ -11,8 +11,8 @@ from threading import Thread
 from lib import *
 
 class TCPClient:
-    IP_ADDR = '127.0.0.1'
-    PORT = 0 
+    IP_ADDR = 'localhost'
+    PORT = 10000 
     # PORT = 11001
 
     # m_bRunning = False
@@ -187,3 +187,4 @@ class TCPClient:
 
 if __name__ == "__main__":
     server = TCPClient()
+    server.__sendEmergencyMsg()
