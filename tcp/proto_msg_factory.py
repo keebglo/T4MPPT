@@ -1,62 +1,123 @@
-import time
 import struct
+import time
+from abc import ABCMeta, abstractmethod
 
-from lib import EmergencyMsg_pb2, EMSUpdate_pb2, PowerOffMsg_pb2, UpdateMsg_pb2, UpdateRequestMsg_pb2
+from lib import (EmergencyMsg_pb2, EMSUpdate_pb2, PowerOffMsg_pb2,
+                 UpdateMsg_pb2, UpdateRequestMsg_pb2)
 
 
-class ProtoMsgFactory:
-    def __init__(self):
+class ProtoMsg:
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def to_string(self):
         pass
 
-    def pack_msg(msg):
+    def get_packed_msg(self, msg, msg_type):
         msg_as_bytes = msg.SerializeToString()
         msg_size = len(msg_as_bytes)
-        msg_size_info = struct.pack('<L', msg_size)
-        msg_type = 1
-        msg_type_info = struct.pack('<L', msg_type)
 
-        return (msg_size_info, msg_type_info , msg_as_bytes)
+        packed_message = (struct.pack('<LL', msg_size, msg_type), msg_as_bytes)
+        return packed_message
 
-    
-    def make_emergency_msg(self):
-        msg = EmergencyMsg_pb2.EmergencyShutdown()
-        msg.TimeTag = int(time.time() * 1000)
-        msg.emergencyMsg = "System Failure"
-        msg.problem = "Something broke"
+    def get_time(self):
+        return int(time.time() * 1000)
 
-        return ProtoMsgFactory.pack_msg(msg)
+    @staticmethod
+    def hang_up():
+        return (struct.pack('<LL', 999, 999))
 
 
-    def make_EMS_update_msg(self):
-        msg = EMSUpdate_pb2.EMSUpdate()
-        msg.TimeTag = int(time.time() * 1000)
-        msg.load = bytes(999)
-        msg.LoadValue = 999
+class EmergencyMsg(ProtoMsg):
+    def __init__(self):
+        self.msg = EmergencyMsg_pb2.EmergencyShutdown()
+        self.msg.TimeTag = super().get_time()
+        self.msg_type = 1
+        self.msg.emergencyMsg = "System Failure"
+        self.msg.problem = "Something broke"
 
-        return ProtoMsgFactory.pack_msg(msg)
+    def get_packed_msg(self):
+        return super().get_packed_msg(self.msg, self.msg_type)
+
+    def to_string(self):
+        print("Emergency Message")
+        print("msg type: ", self.msg_type)
+        print("time tag: ", self.msg.TimeTag)
+        print("emergency message: ", self.msg.emergencyMsg)
+        print("problem: ", self.msg.problem)
 
 
-    def make_power_off_msg(self):
-        msg = PowerOffMsg_pb2.PowerOff()
-        msg.TimeTag = int(time.time() * 1000)
-        msg.powerOff = "dummy value"
+class EMSUpdate(ProtoMsg):
+    def __init__(self):
+        self.msg = EMSUpdate_pb2.EMSUpdate()
+        self.msg.TimeTag = super().get_time()
+        self.msg_type = 2
+        self.msg.load = "load"
+        self.msg.LoadValue = 3
 
-        return ProtoMsgFactory.pack_msg(msg)
+    def get_packed_msg(self):
+        return super().get_packed_msg(self.msg, self.msg_type)
 
-    def make_update_request_msg(self):
-        msg = UpdateRequestMsg_pb2.UpdateRequest()
-        msg.TimeTag = int(time.time() * 1000)
-        msg.request = "dummy value"
+    def to_string(self):
+        print("EMS Update Message")
+        print("msg type: ", self.msg_type)
+        print("time tag: ", self.msg.TimeTag)
+        print("load: ", self.msg.load)
+        print("load value: ", self.msg.LoadValue)
 
-        return ProtoMsgFactory.pack_msg(msg)
 
-    def make_update_msg(self):
-        msg = UpdateMsg_pb2.Update()
-        msg.TimeTag = int(time.time() * 1000)
-        msg.current = 999
-        msg.voltage = 999
-        msg.temperature = 999
-        msg.irradiance = 999
+class PowerOff(ProtoMsg):
+    def __init__(self):
+        self.msg = PowerOffMsg_pb2.PowerOff()
+        self.msg.TimeTag = super().get_time()
+        self.msg_type = 3
+        self.msg.powerOff = "power off"
 
-        return ProtoMsgFactory.pack_msg(msg)
+    def get_packed_msg(self):
+        return super().get_packed_msg(self.msg, self.msg_type)
 
+    def to_string(self):
+        print("Power off message")
+        print("msg type: ", self.msg_type)
+        print("time tag: ", self.msg.TimeTag)
+        print("message: ", self.msg.powerOff)
+
+
+class UpdateRequest(ProtoMsg):
+    def __init__(self):
+        self.msg = UpdateRequestMsg_pb2.UpdateRequest()
+        self.msg.TimeTag = super().get_time()
+        self.msg_type = 4
+        self.msg.request = "making request"
+
+    def get_packed_msg(self):
+        return super().get_packed_msg(self.msg, self.msg_type)
+
+    def to_string(self):
+        print("Update Request Message")
+        print("msg type: ", self.msg_type)
+        print("Time tag: ", self.msg.TimeTag)
+        print("Request: ", self.msg.request)
+
+
+class UpdateMsg(ProtoMsg):
+    def __init__(self):
+        self.msg = UpdateMsg_pb2.Update()
+        self.msg.TimeTag = super().get_time()
+        self.msg_type = 5
+        self.msg.current = 111
+        self.msg.voltage = 222
+        self.msg.temperature = 333
+        self.msg.irradiance = 444
+
+    def get_packed_msg(self):
+        return super().get_packed_msg(self.msg, self.msg_type)
+
+    def to_string(self):
+        print("Update Message")
+        print("msg type: ", self.msg_type)
+        print("Time tag", self.msg.TimeTag)
+        print("current: ", self.msg.current)
+        print("voltage: ", self.msg.voltage)
+        print("temperature: ", self.msg.temperature)
+        print("irradiance: ", self.msg.irradiance)
