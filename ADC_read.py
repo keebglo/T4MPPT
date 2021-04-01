@@ -4,6 +4,8 @@ import time
 # Define Variables
 delay = 0.5
 ldr_channel = 0
+current_channel = 1
+thermistor_channel = 2
 
 # Create SPI
 spi = spidev.SpiDev()
@@ -25,3 +27,11 @@ while True:
     "---------------------------------------"
     print("PhotoResistor Value: %d" % ldr_value)
     time.sleep(delay)
+    current_value = readadc(current_channel)
+    print
+    "---------------------------------------"
+    print("Current Value: %d" % current_value)
+    thermistor_value = readadc(thermistor_channel)
+    print
+    "---------------------------------------"
+    print("Thermistor Value: %d" % thermistor_value)
