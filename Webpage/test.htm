@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV Files to HTML Tables</title>
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>   
+    <script>
+        //add your files to csv_files array
+        var csv_files=['https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/output.csv']
+        $(document).ready(function(){
+            $('#btn_load').click(function(){
+                for(var i=0; i<csv_files.length; i++)
+                    $.ajax({
+                        url: csv_files[i],
+                        dataType:'text',
+                        success:function(data){
+                            var rows = data.split(/\r?\n|\r/);
+                            var table = '<table border="1">';
+                            //row - iteration
+
+                            //print table header
+                            var headings = rows[0].split(";")
+                            table += '<thead><tr>';
+                            for(var j=0; j<headings.length; j++)
+                                table += '<th>' + headings[j] + '</th>';
+                            table += '</tr></thead>';
+
+                            //print table body
+                            table += '<tbody>';
+                            for(var j=1; j<rows.length; j++){
+                                var data_cell = rows[j].split(";")
+                                table += '<tr>';
+                                for(var k=0; k<headings.length; k++)
+                                    table += '<td>' + data_cell[k] + '</td>';
+                                table += '</tr>';
+                            }
+                            table += '</tbody>';
+
+                            //closing table, add line break, appending result to div
+                            table += '</table><br>';
+                            $('#div_results').append(table);
+                        }
+                    });   
+            }); 
+        });
+    </script>
+</head>
+<body>
+    <div id="div_results" style="border: 5px outset grey; padding: 10px;">
+        <h2>--- Output ---</h2>
+    </div>
+    <button id="btn_load">Get External Content</button>
+</body>
+</html>
