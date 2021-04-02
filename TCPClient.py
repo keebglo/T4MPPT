@@ -21,9 +21,8 @@ class TCPClient:
     #-------------
     # Class Constants
     #--------------
-    
     IP_ADDR = '127.0.0.1'
-    PORT = 11001
+    PORT = 10000
     
     #-------------------
     # Class Memeber Variables
@@ -32,8 +31,7 @@ class TCPClient:
     m_bRunning = False
     m_Socket = None
     m_rxThread = None
-    
-  
+    clientnum = 0
     
 #----------------------------------------------------------------------------
 #   Initializations- Create socket connection to server
@@ -53,7 +51,7 @@ class TCPClient:
                 self.m_Socket.connect((self.IP_ADDR, self.PORT))
                 print("Socket Connected...")            
                 self.m_bRunning = True
-
+                clientnum = 1
                 #---------------------------------
                 #m_Socket.sendall(b'Hello, world')
                 #data = m_Socket.recv(1024)                 Test client- Echo 
@@ -64,6 +62,7 @@ class TCPClient:
                 self.__MainMenu()      
             
                 #Thread to process receive messages
+                print("Hello")
                 self.m_rxThread = Thread (target = self.__processRXMsgs)
                 #Process message chosen to send
                 self.__MessageSelection()
@@ -84,21 +83,23 @@ class TCPClient:
     
     def __MessageSelection(self):
          
-         MessageChosen = None
+         MessageChosen = '5'
          self.m_rxThread.start()
-
+         
          while (self.m_bRunning):
-
+              
+             print("In DA THREAD")
              #Wait for input
-             MessageChosen = input("> ")
+             MessageChosen = raw_input("> ")
 
              if not self.m_bRunning: 
                 break
-                print ("Thread not running")
+                print("Thread not running")
 
              if MessageChosen == '1':
                 print("Sending Test Message")
                 self.__sendEmergencyMsg()
+                print ("Sending Message")
 
              elif (MessageChosen == "X" or MessageChosen == 'x'):
                  print ("Closing Socket")
