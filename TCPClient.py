@@ -21,7 +21,7 @@ class TCPClient:
     #-------------
     # Class Constants
     #--------------
-    IP_ADDR = '127.0.0.1'
+    IP_ADDR = '192.168.0.60'
     PORT = 10000
     
     #-------------------
@@ -31,7 +31,14 @@ class TCPClient:
     m_bRunning = False
     m_Socket = None
     m_rxThread = None
-    clientnum = 0
+    m_timeTag = 0
+    m_inputVoltage = 0
+    m_outputVoltage = 0
+    m_inputCurrent = 0
+    m_outputCurrent = 0
+    m_irradiance = 0
+    m_temperature = 0
+
     
 #----------------------------------------------------------------------------
 #   Initializations- Create socket connection to server
@@ -51,81 +58,62 @@ class TCPClient:
                 self.m_Socket.connect((self.IP_ADDR, self.PORT))
                 print("Socket Connected...")            
                 self.m_bRunning = True
-                clientnum = 1
-                #---------------------------------
-                #m_Socket.sendall(b'Hello, world')
-                #data = m_Socket.recv(1024)                 Test client- Echo 
-                #print('Received', repr(data))
-                #---------------------------------
-   
-                #Display menu to test message sending
-                self.__MainMenu()      
-            
+               
+            while(1):   
+                sizeBuff = self.m_Socket.recv(4)
+
+                sizeInfo = struct.unpack('<L', sizeBuff)[0]
+
+                if sizeInfo > 0:
+                #unpack 4 bytes (Little Endian)
+                    buffType = self.m_Socket.recv(4)
+                    msgType = struct.unpack('<L', buffType)[0]
+
+                    #process proto message
+                    msgBuff = self.m_Socket.recv(sizeInfo)
+
+
+                    if msgType == 5 :
+                        print ("---> Update Message Received")
+                        msgFromServer = UpdateMsg_pb2.Update()
+                        msgFromServer.ParseFromString(msgBuff)
+
+                        m_timeTag = msgFromServer.TimeTag
+                        m_inputVoltage = msgFromServer.current
+                        m_outputVoltage = msgFromServer.voltage
+                        m_inputCurrent = 0
+                        m_outputCurrent = 0
+                        m_irradiance = msgFromServer.irradiance
+                        m_temperature = msgFromServer.temperature
+                              
+                        self.writeToCSV()
+
+                        print("Time tag", msgFromServer.TimeTag)
+                        print("current: ", msgFromServer.current)
+                        print("voltage: ", msgFromServer.voltage)
+                        print("temperature: ", msgFromServer.temperature)
+                        print("irradiance: ", msgFromServer.irradiance)
+
                 #Thread to process receive messages
-                print("Hello")
-                self.m_rxThread = Thread (target = self.__processRXMsgs)
-                #Process message chosen to send
-                self.__MessageSelection()
-    
+                #self.m_rxThread = Thread (target = self.__processRXMsgs)
+                
         except Exception as e:
             print(e) 
     #---------------------------------------------------------------------
    
-    def __MainMenu(self):
-        print("-------------------------------")
-        print("Commands:")
-        print("-------------------------------")
-        print ("    1 : Test Message")
-        print ("    X : Close Socket")
-        print("-------------------------------")
-    
-     #---------------------------------------------------------------------
-    
-    def __MessageSelection(self):
-         
-         MessageChosen = '5'
-         self.m_rxThread.start()
-         
-         while (self.m_bRunning):
-              
-             print("In DA THREAD")
-             #Wait for input
-             MessageChosen = raw_input("> ")
 
-             if not self.m_bRunning: 
-                break
-                print("Thread not running")
 
-             if MessageChosen == '1':
-                print("Sending Test Message")
-                self.__sendEmergencyMsg()
-                print ("Sending Message")
-
-             elif (MessageChosen == "X" or MessageChosen == 'x'):
-                 print ("Closing Socket")
-                 print ("Peace out girl scout <3")
-                 self.m_bRunning = False
-
-            #Socket Clean up
-         self.m_Socket.close()
-         self.m_rxThread.join()
-         sys.exit(0)
-    
    #---------------------------------------------------------------------
    
-    def __sendEmergencyMsg(self):
-        #msg = "1"
-       # self.m_Socket.sendall(msg.encode())        Test code
-        #print("Message Sent")
-
+    def __sendUpdateRequest(self):
+     
        timetag = time.time() * 1000
        iTimeTag = int(timetag)
 
-       msgTosend = EmergencyMsg_pb2.EmergencyShutdown()
+       msgTosend = UpdateRequestMsg_pb2.UpdateRequest()
        msgTosend.TimeTag = iTimeTag
-       msgTosend.emergencyMsg = "System Failure"
-       msgTosend.problem = "Something broke"
-       
+       msgTosend.request = "True"
+ 
        msgBytestoSend = msgTosend.SerializeToString()
        payloadsize= len(msgBytestoSend)
        sizeinfo = struct.pack('<L', payloadsize)
@@ -144,42 +132,69 @@ class TCPClient:
     def __processRXMsgs(self):
 
         bServerDisconnect = False
-
+        print("In the thread")
+        
         while(self.m_bRunning):
             print("RCV Thread: Waiting for data...")
-            
-            #4 bytes from buffSize
-            buffSize = self.m_Socket.recv(4)          
-            
-            #server disconnect
-            if len(buffSize) == 0:
-                bServerDisconnect = True
-                break
 
-            else:
-                buffSize = struct.unpack('<L', buffSize)[0]
+            sizeBuff = self.m_Socket.recv(4)
 
-                if buffSize > 0:
-                    #unpack 4 bytes (little endian)
-                    buffType = self.m_Socket.recv(4)
-                    msgType = struct.unpack('<L', buffType)[0]
+            sizeInfo = struct.unpack('<L', sizeBuff)[0]
 
-                    #process proto message
-                    msgBuff = self.m_Socket.recv(buffSize)
+            if sizeInfo > 0:
+            #unpack 4 bytes (Little Endian)
+                buffType = self.m_Socket.recv(4)
+                msgType = struct.unpack('<L', buffType)[0]
 
-                    if msgType == 1 :
-                        print ("---> Emergency Message Received")
-                        msgFromSever = EmergencyMsg_pb2.EmergencyShutdown()
-                        msgFromServer.ParseFromString(msgBuff)
+                #process proto message
+                msgBuff = self.m_Socket.recv(sizeInfo)
 
-                        print("Timetag: ", msgFromServer.TimeTag)
-                        print("Message: ", msgFromServer.emergencyMsg)
-                        print("Problem: ", msgFromServer.problem)
 
+                if msgType == 5 :
+                    print ("---> Update Message Received")
+                    msgFromServer = UpdateMsg_pb2.Update()
+                    msgFromServer.ParseFromString(msgBuff)
+
+                    self.m_timeTag = msgFromServer.TimeTag
+                    self. m_inputVotage = msgFromServer.current
+                    self.m_outputVoltage = msgFromServer.voltage
+                    self.m_inputcurrent = 0
+                    self.m_outputcurrent = 0
+                    self.m_irradiance = msgFromServer.irradiance
+                    self.m_temperature = msgFromServer.temperature
+                          
+                    writeToCSV()
+
+                    print("Time tag", msgFromServer.TimeTag)
+                    print("current: ", msgFromServer.current)
+                    print("voltage: ", msgFromServer.voltage)
+                    print("temperature: ", msgFromServer.temperature)
+                    print("irradiance: ", msgFromServer.irradiance)
         
-                   # data self.m_Socket(1024)
-                   # print('Received', repr(data))      Test code
+    def writeToCSV(self):
+        filePath = '/var/www/html' #change to location of pi storage
+        fileName = 'ConverterValues.txt'
+        fullPath = os.path.join(filePath, fileName)
 
+        print("Attempting to write")
+        
+        file = open(fullPath, "a")
+        file.write(str(self.m_timeTag))
+        file.write(',')
+        file.write(str(self.m_inputVoltage))
+        file.write(',')
+        file.write(str(self.m_outputVoltage))
+        file.write(',')
+        file.write(str(self.m_inputCurrent))
+        file.write(',')
+        file.write(str(self.m_outputCurrent))
+        file.write(',')
+        file.write(str(self.m_temperature))
+        file.write(',')
+        file.write(str(self.m_irradiance))
+        file.write('\n')
+
+        file.close()
     #---------------------------------------------------------------------
 
 if __name__ == "__main__":

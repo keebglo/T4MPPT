@@ -25,19 +25,37 @@ from threading import Thread
 import RPi.GPIO as GPIO
 import time
 import array as arr
+import tcp_server
+import ADC_read
 
 import EmergencyMsg_pb2
 import UpdateMsg_pb2
 import UpdateRequestMsg_pb2
 from subprocess import call
-import PowerOffMsg_pb2 
+import PowerOffMsg_pb2
+
+#Global variables up here
+#----------------------------------
+# i.e. global m_Gcount
+global m_GPowerValue
+global m_GVoltageValue
+global m_GCurrentValue
+global m_GTemperatureValue
+#----------------------------------
+
 
 logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
 TRUE = 1
-FALSE = 0
+
 #INITIALIZATION 
 class Initialize:
-    def __init__(self):
+
+#class variables
+    #---------------------------
+    # m_cName
+    #---------------------------
+   
+   def __init__(self):
     #Pin and Value sets
         CurrentInputPin = 18    #GPIO 18, Pin 12
         VoltageInputPin = 23    #GPIO 23, Pin 16 
@@ -61,6 +79,11 @@ class Initialize:
         pulse = GPIO.PWM(pwmPin, frequency)
         pulse.start(25)
         print("Initialization Complete")
+        
+        ip = '192.168.0.60'
+        port = 10000
+        global server
+        server = tcp_server.TCPServer(ip, port)
             
 #MESSAGE HANDLER
 class MsgHandler:
@@ -165,10 +188,7 @@ class Algorithm():
     def RunAlgorithm(self, signal):
         #Run the Algorithm
         #self.checkAlg = signal
-        global PowerValue
-        global VoltageValue
-        global CurrentValue
-        global TemperatureValue
+        
         PowerValue = arr.array('f', [0,1,0,1,0])
         print("Power Array Value = ", PowerValue)
         VoltageValue = arr.array('f', [0,0,0,0,0])
@@ -177,41 +197,16 @@ class Algorithm():
         dutycycle = 50
         PowerValue[1] = 1
         
-        while(1==1):
-            while(signal == TRUE):
-                print("Run Algorithm")
-                print("Power Array Value = ", PowerValue)
-                if PowerValue[0] != PowerValue[1]:
-                    print("Power [0] != Power [1]")
-                    if PowerValue[0] > PowerValue[1]: #If latest power value is greater than the previous value
-                        #If PV_v(n) > PV_v(n-1)
-                        if VoltageValue[0] > VoltageValue[1]: #If most recent voltage value is greater than the previous value, the duty cycle decreases
-                            dutycycle -= 5
-                            pulse.ChangeDutyCycle(dutycycle)
-                            print('pwm = ',dutycycle)
-                        #If PV(n) < PV(n-1)
-                        else: #If most recent voltage value is less than the previous value, the duty cycle increases
-                            #Increase PWM
-                            dutycycle += 5
-                            pulse.ChangeDutyCycle(dutycycle)
-                            print('pwm = ',dutycycle)
-                    else: #If latest power value is less than the previous value
-                        #If PV_v(n) > PV_v(n-1)
-                        if VoltageValue[0] > VoltageValue[1]: #If most recent voltage value is greater than the previous value, the duty cycle increases
-                            #Increase PWM
-                            dutycycle += 5
-                            pulse.ChangeDutyCycle(dutycycle)
-                            print('pwm = ',dutycycle)
-                        #If PV(n) < PV(n-1)
-                        else: #If most recent voltage value is less than the previous value, the duty cycle decreases
-                            #Decrease PWM
-                            dutycycle -= 5
-                            pulse.ChangeDutyCycle(dutycycle)
-                            print('pwm = ',dutycycle)
-                self.PowerValueShift()
-                self.VoltageValueShift()
-                time.sleep(5)#60 second wait
+        timer = time.time() * 1000
+        
+        while(1):
+            #currentTime = time.time() * 1000
+           # if (timer - currentTime >=5):
                 
+                server.post()
+                #timer = time.time() * 1000
+                time.sleep(5)
+
                 
     #Update the variable with value                        
     #def update(var,value):
