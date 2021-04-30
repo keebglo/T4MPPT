@@ -1,0 +1,1546 @@
+<!DOCTYPE HTML>
+<!--
+	Stellar by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Team4 MPPT</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script type="text/javascript" src="autoUpdate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.1.0/dist/chart.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" class="alt">
+						<span class="logo"><img src="images/logo.svg" alt="" /></span>
+						<h1>On the Fly Solar Tracking</h1>
+						<p>A new way to monitor your solar energy output.</p>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul>
+						<div class="tab">
+							<li><a href="#intro"> <button class="tablinks" onclick="openTab(event, 'Sun')">Sunday</button></a></li>
+							<li><a href="#intro"> <button class="tablinks" onclick="openTab(event, 'Mon')">Monday</button></a></li>
+							<li><a href="#intro"> <button class="tablinks" onclick="openTab(event, 'Tue')">Tuesday</button></a></li>
+							<li><a href="#intro"> <button class="tablinks" onclick="openTab(event, 'Wed')">Wednesday</button></a></li>
+							<li><a href="#intro"> <button class="tablinks" onclick="openTab(event, 'Thur')">Thursday</button></a></li>
+							<li><a href="#intro"> <button class="tablinks" onclick="openTab(event, 'Fri')">Friday</button></a></li>
+							<li><a href="#intro"> <button class="tablinks" onclick="openTab(event, 'Sat')">Saturday</button></a></li>
+							
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Sun -->
+							<div id="Sun" class="tabcontent">
+								<section id="intro" class="main special">
+										<header class="major">
+											<h2>Sunday Data</h2>
+										</header>
+								<ul class="features">
+								<li>
+										<div class ="row">
+											<div class="column">
+											Voltage
+											<canvas id="myChartSunV" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartSunV').getContext('2d');
+												const myChartSunV = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Voltage',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'V';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[0];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Power
+											<canvas id="myChartSunP" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartSunP').getContext('2d');
+												const myChartSunP = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Power',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'W';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[1];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Current
+											<canvas id="myChartSunC" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartSunC').getContext('2d');
+												const myChartSunC = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Current',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'A';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[2];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											<div style="width:300px;height:300px;border:0px solid;"></div>
+										</div>
+										
+										<!--<script type='text/javascript' src='script.js'></script>
+										<div id ="csv_data">
+										<ul class="actions">
+											<li><a href="generic.html" class="button">Learn More</a></li>
+										</ul>-->
+							</div>
+							</li>
+							</u1>
+							<footer class="major">
+							<body> Average Ambient Temperature:	</body>					
+									<br/>			
+									<ul class="actions special">
+										<li><a href="Sunday.html" class="button">More Info</a></li>
+									</ul>
+								</footer>
+							</div>
+						<!-- Mon -->
+							<div id="Mon" class="tabcontent">
+								<section id="intro" class="main special">
+										<header class="major">
+											<h2>Monday Data</h2>
+										</header>
+								<ul class="features">
+								<li>
+										<div class ="row">
+											<div class="column">
+											Voltage
+											<canvas id="myChartMonV" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartMonV').getContext('2d');
+												const myChartMonV = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Voltage',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'V';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[0];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Power
+											<canvas id="myChartMonP" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartMonP').getContext('2d');
+												const myChartMonP = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Power',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'W';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[1];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Current
+											<canvas id="myChartMonC" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartMonC').getContext('2d');
+												const myChartMonC = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Current',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'A';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[2];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											<div style="width:300px;height:300px;border:0px solid;"></div>
+										</div>
+							</div>
+							</li>
+							</u1>
+							<footer class="major">
+							<body> Average Ambient Temperature:	</body>					
+									<br/>			
+									<ul class="actions special">
+										<li><a href="Monday.html" class="button">More Info</a></li>
+									</ul>
+								</footer>
+							</div>	
+
+						<!-- Tues -->
+							<div id="Tue" class="tabcontent">
+								<section id="intro" class="main special">
+										<header class="major">
+											<h2>Tuesday Data</h2>
+										</header>
+								<ul class="features">
+								<li>
+										<div class ="row">
+											<div class="column">
+											Voltage
+											<canvas id="myChartTueV" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartTueV').getContext('2d');
+												const myChartTueV = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Voltage',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'V';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[0];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Power
+											<canvas id="myChartTueP" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartTueP').getContext('2d');
+												const myChartTueP = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Power',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'W';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[1];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Current
+											<canvas id="myChartTueC" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartTueC').getContext('2d');
+												const myChartTueC = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Current',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'A';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[2];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											<div style="width:300px;height:300px;border:0px solid;"></div>
+										</div>
+							</div>
+							</li>
+							</u1>
+							<footer class="major">
+							<body> Average Ambient Temperature:	</body>					
+									<br/>			
+									<ul class="actions special">
+										<li><a href="Tuesday.html" class="button">More Info</a></li>
+									</ul>
+								</footer>
+							</div>
+						<!-- Wed -->
+							<div id="Wed" class="tabcontent">
+								<section id="intro" class="main special">
+										<header class="major">
+											<h2>Wednesday Data</h2>
+										</header>
+								<ul class="features">
+								<li>
+										<div class ="row">
+											<div class="column">
+											Voltage
+											<canvas id="myChartWed" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartWedV').getContext('2d');
+												const myChartWedV = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Voltage',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'V';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[0];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Power
+											<canvas id="myChartWedP" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartWedP').getContext('2d');
+												const myChartWedP = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Power',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'W';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[1];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Current
+											<canvas id="myChartWedC" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartWedC').getContext('2d');
+												const myChartWedC = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Current',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'A';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[2];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											<div style="width:300px;height:300px;border:0px solid;"></div>
+										</div>
+							</div>
+							</li>
+							</u1>
+							<footer class="major">
+							<body> Average Ambient Temperature:	</body>					
+									<br/>			
+									<ul class="actions special">
+										<li><a href="Wednesday.html" class="button">More Info</a></li>
+									</ul>
+								</footer>
+							</div>
+						<!-- Thur -->
+							<div id="Thur" class="tabcontent">
+								<section id="intro" class="main special">
+										<header class="major">
+											<h2>Thursday Data</h2>
+										</header>
+								<ul class="features">
+								<li>
+										<div class ="row">
+											<div class="column">
+											Voltage
+											<canvas id="myChartThurV" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartThurV').getContext('2d');
+												const myChartThurV = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Voltage',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'V';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[0];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Power
+											<canvas id="myChartThurP" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartThurP').getContext('2d');
+												const myChartThurP = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Power',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'W';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[1];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Current
+											<canvas id="myChartThurC" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartThurC').getContext('2d');
+												const myChartThurC = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Current',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'A';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[2];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											<div style="width:300px;height:300px;border:0px solid;"></div>
+										</div>
+							</div>
+							</li>
+							</u1>
+							<footer class="major">
+									<body> Average Ambient Temperature:	</body>					
+									<br/>										
+									<ul class="actions special">
+
+										<li><a href="Thursday.html" class="button">More Info</a></li>
+									</ul>
+								</footer>
+							</div>
+						<!-- Fri -->
+							<div id="Fri" class="tabcontent">
+								<section id="intro" class="main special">
+										<header class="major">
+											<h2>Friday Data</h2>
+										</header>
+								<ul class="features">
+								<li>
+										<div class ="row">
+											<div class="column">
+											Voltage
+											<canvas id="myChartFriV" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartFriV').getContext('2d');
+												const myChartFriV = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Voltage',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'V';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[0];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Power
+											<canvas id="myChartFriP" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartFriP').getContext('2d');
+												const myChartFriP = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Power',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'W';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[1];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Current
+											<canvas id="myChartFriC" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartFriC').getContext('2d');
+												const myChartFriC = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Current',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'A';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[2];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											<div style="width:300px;height:300px;border:0px solid;"></div>
+										</div>
+							</div>
+							</li>
+							</u1>
+							<footer class="major">
+									<body> Average Ambient Temperature:	</body>					
+									<br/>										
+									<ul class="actions special">
+
+										<li><a href="Friday.html" class="button">More Info</a></li>
+									</ul>
+								</footer>
+							</div>
+						<!-- Sat -->
+							<div id="Sat" class="tabcontent">
+								<section id="intro" class="main special">
+										<header class="major">
+											<h2>Saturday Data</h2>
+										</header>
+								<ul class="features">
+								<li>
+										<div class ="row">
+											<div class="column">
+											Voltage
+											<canvas id="myChartSatV" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartSatV').getContext('2d');
+												const myChartSatV = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Voltage',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'V';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[0];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Power
+											<canvas id="myChartSatP" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartSatP').getContext('2d');
+												const myChartSatP = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Power',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'W';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[1];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											Current
+											<canvas id="myChartSatC" width="300" height="300"></canvas>
+											<script>
+												chartIt();
+												async function chartIt(){
+												const data = await getData();
+												const ctx = document.getElementById('myChartSatC').getContext('2d');
+												const myChartSatC = new Chart(ctx, {
+
+													type: 'line',
+													data: {
+														labels: data.xs,
+														datasets: [{
+															label: 'Current',
+															data: data.ys,
+															fill: true,
+															backgroundColor: [
+																'rgba(255, 99, 132, 0.2)',              
+															],
+															borderColor: [
+																'rgba(255, 99, 132, 1)',
+															],
+															borderWidth: 1
+														}
+														]
+													},
+													options: {
+														scales: {
+															y: {
+																ticks: {
+																	// Include a dollar sign in the ticks
+																	callback: function(value, index, values) {
+																		return value + 'A';
+																	}
+																}
+															}
+														}
+													}
+												});
+												}
+
+												async function getData(){
+													const xs = [];
+													const ys = [];
+												//const response = await fetch('ZonAnn.TsdSST.csv');
+												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
+												const data = await response.text();
+
+												const table = data.split('\n').slice(1); 
+												table.forEach(row => {
+													const columns = row.split(','); //for each row, split it up by commas
+													//now getting specific elements in each row
+													const year = columns[3]; // 0 element is year, 1 element is temp 
+													xs.push(year);//adds year to xlabels array
+													const temp = columns[2];
+													ys.push(parseFloat(temp));
+													console.log(year,temp);
+												});
+												return {xs, ys};
+												}
+											</script>
+											<div style="width:300px;height:300px;border:0px solid;"></div>
+										</div>
+							</div>
+							</li>
+							</u1>
+							<footer class="major">
+									<body> Average Ambient Temperature:	</body>					
+									<br/>										
+									<ul class="actions special">
+
+										<li><a href="Thursday.html" class="button">More Info</a></li>
+									</ul>
+								</footer>
+							</div>
+					</div>
+				<!-- Footer -->
+					<footer id="footer">
+						<section>
+							<h2>Team Members</h2>
+							<dl class="alt">
+								<dt>Ken Arnold</dt>
+								<dd>Project Advisor</dd>
+								<dt>Anne Vu</dt>
+								<dd>Team Leader</dd>
+								<dt>Daniel Baltazar</dt>
+								<dd>Presentation Manager</dd>
+								<dt>Travis Blake</dt>
+								<dd>Parts Manager</dd>
+								<dt>Ryan Dial</dt>
+								<dd>Technical Writer</dd>
+								<dt>Keelan Gloria</dt>
+								<dd>Webpage Manager</dd>
+							</dl>
+							<ul class="icons">
+								<li><a href="https://twitter.com/SDSU" class="icon brands fa-twitter alt"><span class="label">Twitter</span></a></li>
+								<!-- <li><a href="#" class="icon brands fa-facebook-f alt"><span class="label">Facebook</span></a></li> -->
+								<!-- <li><a href="#" class="icon brands fa-instagram alt"><span class="label">Instagram</span></a></li> -->
+								<li><a href="#" class="icon brands fa-github alt"><span class="label">GitHub</span></a></li>
+								<!-- <li><a href="#" class="icon brands fa-dribbble alt"><span class="label">Dribbble</span></a></li> -->
+							</ul>
+						</section>
+						<p class="copyright">&copy; Untitled. Design: <a href="https://html5up.net">HTML5 UP</a>.<br />
+						Tempalte built by <a href="https://twitter.com/ajlkn">@ajlkn</a> for <a href="https://html5up.net">HTML5 UP</a>.</p>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/tab.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script type="text/javascript" src="autoUpdate.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

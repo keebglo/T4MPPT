@@ -99,11 +99,11 @@ input, select, textarea {
 	}
 
 	body {
-		background-color: #935d8c;
-		background-image: url("images/overlay.png"), -moz-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
-		background-image: url("images/overlay.png"), -webkit-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
-		background-image: url("images/overlay.png"), -ms-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
-		background-image: url("images/overlay.png"), linear-gradient(45deg, #ffbfb5 25%, #b0f1ff 85%);
+		background-color: #19305c;
+		background-image: url("images/overlay.png"), -moz-linear-gradient(45deg, #19305c 15%, #142e59 85%);
+		background-image: url("images/overlay.png"), -webkit-linear-gradient(45deg, #19305c 15%, #142e59 85%);
+		background-image: url("images/overlay.png"), -ms-linear-gradient(45deg, #19305c 15%, #142e59 85%);
+		background-image: url("images/overlay.png"), linear-gradient(45deg, #142e59 25%, #a6b3bd 85%);
 	}
 
 		body.is-preload *, body.is-preload *:before, body.is-preload *:after {
@@ -1925,7 +1925,7 @@ input, select, textarea {
 	.button {
 		background-color: transparent;
 		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-		color: #ffffff !important;
+		color: #000000 !important;
 	}
 
 		input[type="submit"]:hover,
@@ -3211,10 +3211,10 @@ input, select, textarea {
 /* Nav */
 
 	#nav {
-		-moz-transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
+		/*-moz-transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
 		-webkit-transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
 		-ms-transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
-		transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
+		transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;*/
 		background-color: #ffffff;
 		color: #636363;
 		position: absolute;
@@ -3268,9 +3268,9 @@ input, select, textarea {
 		}
 
 			#nav ul li {
-				-moz-transition: margin 0.2s ease;
+				/*-moz-transition: margin 0.2s ease;
 				-webkit-transition: margin 0.2s ease;
-				-ms-transition: margin 0.2s ease;
+				-ms-transition: margin 0.2s ease;*/
 				transition: margin 0.2s ease;
 				display: inline-block;
 				margin: 0 0.35em;
@@ -3279,9 +3279,9 @@ input, select, textarea {
 			}
 
 				#nav ul li a {
-					-moz-transition: font-size 0.2s ease;
+					/*-moz-transition: font-size 0.2s ease;
 					-webkit-transition: font-size 0.2s ease;
-					-ms-transition: font-size 0.2s ease;
+					-ms-transition: font-size 0.2s ease;*/
 					transition: font-size 0.2s ease;
 					display: inline-block;
 					height: 2.25em;
@@ -3289,18 +3289,17 @@ input, select, textarea {
 					padding: 0 1.25em;
 					border: 0;
 					border-radius: 8px;
-					box-shadow: inset 0 0 0 1px transparent;
+					/*box-shadow: inset 0 0 0 1px transparent;*/
 				}
 
 					#nav ul li a:hover {
-						background-color: rgba(222, 222, 222, 0.25);
+						/*background-color: rgba(222, 222, 222, 0);*/
 					}
 
 					#nav ul li a.active {
-						background-color: #ffffff;
-						box-shadow: none;
+						/*background-color: #ffffff;
+						box-shadow: none;*/
 					}
-
 		#nav.alt {
 			position: fixed;
 			top: 0;
@@ -3703,7 +3702,7 @@ input, select, textarea {
 		#footer .copyright {
 			width: 100%;
 			margin: 2.5em 0 2em 0;
-			font-size: 0.8em;
+			font-size: 0.4em;
 			text-align: center;
 		}
 
@@ -3783,3 +3782,147 @@ input, select, textarea {
 			}
 
 		}
+		
+		
+.tab {
+  
+  overflow: hidden;
+  border: 0px solid #ccc;
+  background-color: #f1f1f1;
+  text-align: center;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  padding: 28px 5px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #636363;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  animation: fadeEffect 0.5s;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.Sun {
+		display: -moz-flex;
+		display: -webkit-flex;
+		display: -ms-flex;
+		display: flex;
+		-moz-align-items: center;
+		-webkit-align-items: center;
+		-ms-align-items: center;
+		align-items: center;
+		margin: 0 0 2em 0;
+	}
+
+		.s .content {
+			-moz-flex: 1;
+			-webkit-flex: 1;
+			-ms-flex: 1;
+			flex: 1;
+		}
+
+			.spotlight .content > :last-child {
+				margin-bottom: 0;
+			}
+
+			.spotlight .content header.major {
+				margin: 0 0 2em 0;
+			}
+
+		.spotlight .image {
+			display: inline-block;
+			margin-left: 4em;
+			padding: 0.65em;
+			border-radius: 100%;
+			border: solid 1px;
+		}
+
+			.spotlight .image img {
+				display: block;
+				border-radius: 100%;
+				width: 16em;
+			}
+
+		@media screen and (max-width: 980px) {
+
+			.spotlight {
+				-moz-flex-direction: column-reverse;
+				-webkit-flex-direction: column-reverse;
+				-ms-flex-direction: column-reverse;
+				flex-direction: column-reverse;
+				text-align: center;
+			}
+
+				.spotlight .content {
+					-moz-flex: 0 1 auto;
+					-webkit-flex: 0 1 auto;
+					-ms-flex: 0 1 auto;
+					flex: 0 1 auto;
+					width: 100%;
+				}
+
+					.spotlight .content header.major h2:after {
+						margin-left: auto;
+						margin-right: auto;
+					}
+
+					.spotlight .content .actions {
+						-moz-justify-content: center;
+						-webkit-justify-content: center;
+						-ms-justify-content: center;
+						justify-content: center;
+						width: calc(100% + 1em);
+					}
+
+				.spotlight .image {
+					-moz-flex: 0 1 auto;
+					-webkit-flex: 0 1 auto;
+					-ms-flex: 0 1 auto;
+					flex: 0 1 auto;
+					margin-left: 0;
+					margin-bottom: 2em;
+				}
+
+		}
+
+		@media screen and (max-width: 736px) {
+
+			.spotlight .image {
+				padding: 0.35em;
+			}
+
+				.spotlight .image img {
+					width: 12em;
+				}
+
+		}
+
+	.spotlight .image {
+		border-color: rgba(255, 255, 255, 0.35);
+	}
