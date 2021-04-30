@@ -57,21 +57,25 @@
 										<div class ="row">
 											<div class="column">
 											Voltage
-											<canvas id="myChartSunV" width="300" height="300"></canvas>
-											<script>
-												chartIt();
-												async function chartIt(){
-												const data = await getData();
-												const ctx = document.getElementById('myChartSunV').getContext('2d');
-												const myChartSunV = new Chart(ctx, {
+											<canvas id="mycanvas"></canvas>
+    <script type="text/javascript">
+ // used for example purposes
+    function getRandomIntInclusive(min, max) {
+     min = Math.ceil(min);
+     max = Math.floor(max);
+     return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
-													type: 'line',
-													data: {
-														labels: data.xs,
-														datasets: [{
-															label: 'Voltage',
-															data: data.ys,
-															fill: true,
+    // create initial empty chart
+    var ctx_live = document.getElementById("mycanvas");
+    var myChart = new Chart(ctx_live, {
+     type: 'line',
+     data: {
+       labels: [],
+       datasets: [{
+			label: 'Voltage',
+         data: [],
+fill: true,
 															backgroundColor: [
 																'rgba(255, 99, 132, 0.2)',              
 															],
@@ -79,44 +83,58 @@
 																'rgba(255, 99, 132, 1)',
 															],
 															borderWidth: 1
-														}
-														]
-													},
-													options: {
-														scales: {
-															y: {
-																ticks: {
-																	// Include a dollar sign in the ticks
-																	callback: function(value, index, values) {
-																		return value + 'V';
-																	}
-																}
-															}
-														}
-													}
-												});
-												}
+       }]
+     },
+     options: {
+       responsive: true,
+       title: {
+         display: true,
+         text: "Chart.js - Dynamically Update Chart Via Ajax Requests",
+       },
+       legend: {
+         display: false
+       },
+       scales: {
+         yAxes: [{
+           ticks: {
+             beginAtZero: false,
+           }
+         }]
+       }
+     }
+    });
 
-												async function getData(){
-													const xs = [];
-													const ys = [];
-												//const response = await fetch('ZonAnn.TsdSST.csv');
-												const response = await fetch('https://raw.githubusercontent.com/keebglo/T4MPPTWebpage/main/test.csv');
-												const data = await response.text();
+    // this post id drives the example data
+    var postId = 1;
 
-												const table = data.split('\n').slice(1); 
-												table.forEach(row => {
-													const columns = row.split(','); //for each row, split it up by commas
-													//now getting specific elements in each row
-													const year = columns[3]; // 0 element is year, 1 element is temp 
-													xs.push(year);//adds year to xlabels array
-													const temp = columns[0];
-													ys.push(parseFloat(temp));
-													console.log(year,temp);
-												});
-												return {xs, ys};
-												}
-											</script>
+    // logic to get new data
+    var getData = function() {
+     $.ajax({
+       url: 'https://jsonplaceholder.typicode.com/posts/' + postId + '/comments',
+       success: function(data) {
+         // process your data to pull out what you plan to use to update the chart
+         // e.g. new label and a new data point
+         
+         // add new label and data point to chart's underlying data structures
+         myChart.data.labels.push(postId++ +" AM");
+         myChart.data.datasets[0].data.push(getRandomIntInclusive(1, 25));
+         
+         // re-render the chart
+         myChart.update();
+       }
+     });
+    };
+
+    // get new data every 3 seconds
+    setInterval(getData, 3000);
+   
+    </script>
+  </head>
+  <body>
+  <canvas id="mycanvas"></canvas>
+    <canvas id="chart" width="300" height="300"></canvas>
+  </body>
+
 											Power
 											<canvas id="myChartSunP" width="300" height="300"></canvas>
 											<script>
