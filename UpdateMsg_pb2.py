@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0fUpdateMsg.proto\x12\x08MpptMsgs\"d\n\x06Update\x12\x0f\n\x07TimeTag\x18\x01 \x01(\x06\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x05\x12\x0f\n\x07voltage\x18\x03 \x01(\x05\x12\x13\n\x0btemperature\x18\x04 \x01(\x05\x12\x12\n\nirradiance\x18\x05 \x01(\x05\x62\x06proto3'
+  serialized_pb=b'\n\x0fUpdateMsg.proto\x12\x08MpptMsgs\"\x9c\x01\n\x06Update\x12\x0f\n\x07TimeTag\x18\x01 \x01(\x06\x12\x14\n\x0cinputVoltage\x18\x02 \x01(\t\x12\x14\n\x0cinputCurrent\x18\x03 \x01(\t\x12\x15\n\routputVoltage\x18\x04 \x01(\t\x12\x15\n\routputCurrent\x18\x05 \x01(\t\x12\x13\n\x0btemperature\x18\x06 \x01(\t\x12\x12\n\nirradiance\x18\x07 \x01(\tb\x06proto3'
 )
 
 
@@ -41,30 +41,44 @@ _UPDATE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='current', full_name='MpptMsgs.Update.current', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='inputVoltage', full_name='MpptMsgs.Update.inputVoltage', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='voltage', full_name='MpptMsgs.Update.voltage', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='inputCurrent', full_name='MpptMsgs.Update.inputCurrent', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='temperature', full_name='MpptMsgs.Update.temperature', index=3,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='outputVoltage', full_name='MpptMsgs.Update.outputVoltage', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='irradiance', full_name='MpptMsgs.Update.irradiance', index=4,
-      number=5, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='outputCurrent', full_name='MpptMsgs.Update.outputCurrent', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='temperature', full_name='MpptMsgs.Update.temperature', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='irradiance', full_name='MpptMsgs.Update.irradiance', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -80,8 +94,8 @@ _UPDATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=29,
-  serialized_end=129,
+  serialized_start=30,
+  serialized_end=186,
 )
 
 DESCRIPTOR.message_types_by_name['Update'] = _UPDATE
