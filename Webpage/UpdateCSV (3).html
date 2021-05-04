@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script type="text/javascript" src="canvasjs.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<br /><!-- Just so that JSFiddle's Result label doesn't overlap the Chart -->
+<div id="chartContainer" style="height: 300px; width: 50%;"></div>
+<br />
+<div id="chartContainer2" style="height: 300px; width: 50%;"></div>
+<br />
+<div id="chartContainer3" style="height: 300px; width: 50%;"></div>
+<body>
+<script type="text/javascript">
+var DOTW =6;
+
+function getDataPointsFromCSV(url, chart, datacol) {
+	  $.when($.get(url, function(data) {
+	    //chart.options.data[0].dataPoints = [];
+	    var allLinesArray = data.split("\n");
+	    if( allLinesArray.length > 0 ){
+		  chart.options.data[0].dataPoints = [];
+	      for (var i = 0; i < allLinesArray.length; i++) {
+	        var rowData = allLinesArray[i].split(",");
+	        chart.options.data[0].dataPoints.push({
+				x: new Date(Date.parse(rowData[0] + rowData[1])),
+				label: new Date(Date.parse(rowData[0] + rowData[1])),
+				y: parseFloat(rowData[datacol])
+			});
+			if (chart.options.data[0].dataPoints.length > 12)
+			{
+				chart.options.data[0].dataPoints.shift();
+			}
+			//backgroundColor: 'rgba(255, 99, 132, 0.2)',              
+			//borderColor: 'rgba(255, 99, 132, 1)',
+	      }
+	    }
+		chart.options.data[0].dataPoints = chart.options.data[0].dataPoints.filter(OnlyFriday);
+	  })).then(function( data, textStatus, jqXHR ) {
+	  	chart.render();
+	  });
+	}
+
+function OnlyFriday(dps) {
+  return dps.x.getDay() == DOTW;
+}
+
+	var chart = new CanvasJS.Chart("chartContainer", {
+	  title: {
+	    text: "Voltage",
+	  },
+	  axisX:{
+		labelFormatter: function(e) {
+	        return CanvasJS.formatDate(e.value, "YYYY-MM-DD HH:mm:ss");
+	    }		
+	  },
+	  axisY:{
+		title: "Voltage",
+		suffix: " V"
+	  },
+	  data: [{
+	      type: "area",	  
+		  fillOpacity: 1,
+	      dataPoints: []
+	  }]
+	});
+	var chart2 = new CanvasJS.Chart("chartContainer2", {
+	  title: {
+	    text: "Current",
+	  },
+	  axisX:{
+		labelFormatter: function(e) {
+	        return CanvasJS.formatDate(e.value, "YYYY-MM-DD HH:mm:ss");
+	    }		
+	  },
+	  axisY:{
+		title: "Current",
+		suffix: " A"
+	  },
+	  data: [{
+	      type: "area",	
+		  fillOpacity: 1,
+	      dataPoints: []
+	  }]
+	});
+	var chart3 = new CanvasJS.Chart("chartContainer3", {
+	  title: {
+	    text: "Power",
+	  },
+	  axisX:{
+		labelFormatter: function(e) {
+	        return CanvasJS.formatDate(e.value, "YYYY-MM-DD HH:mm:ss");
+	    }		
+	  },
+	  axisY:{
+		title: "Power",
+		suffix: " W"
+	  },
+	  data: [{
+	      type: "area",
+		  fillOpacity: 1,
+	      dataPoints: []
+	  }]
+	});
+	
+
+	getDataPointsFromCSV("ConverterValues.csv", chart, 2);
+	getDataPointsFromCSV("ConverterValues.csv", chart2, 3);
+	getDataPointsFromCSV("ConverterValues.csv", chart3, 4);
+	var updateChart = function () {
+	  getDataPointsFromCSV("ConverterValues.csv", chart, 2);
+	  getDataPointsFromCSV("ConverterValues.csv", chart2, 3);
+	  getDataPointsFromCSV("ConverterValues.csv", chart3, 4);
+	};
+	
+	setInterval(function(){updateChart()}, 1000);
+
+</script>
+</body>
+</html>
